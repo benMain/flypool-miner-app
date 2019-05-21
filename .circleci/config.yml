@@ -32,7 +32,7 @@ jobs:
       - run:
           name: Copy Cloudformation
           command: |
-            cp cfn/flypool-miner-app.yaml dist/flypool/flypool-miner-app.yaml
+            cp cfn/flypool-miner-app.yaml dist/flypool-miner-app/flypool-miner-app.yaml
         
       # - run:
       #     name: Unit Test
@@ -46,7 +46,7 @@ jobs:
       - persist_to_workspace:
           root: dist
           paths:
-            - flypool
+            - flypool-miner-app
 
   deploy:
     docker:
