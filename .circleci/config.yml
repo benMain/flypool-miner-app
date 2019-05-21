@@ -32,7 +32,8 @@ jobs:
       - run:
           name: Copy Cloudformation
           command: |
-            cp cfn/flypool-miner-app.yaml dist/flypool-miner-app/flypool-miner-app.yaml
+            cp cfn/flypool-miner-app.yaml dist/flypool-miner-app/
+            cp .circleci/aws_config dist/flypool-miner-app/ 
         
       # - run:
       #     name: Unit Test
@@ -72,6 +73,7 @@ jobs:
                 --stack-name flypool-miner-app \
                 --capabilities CAPABILITY_NAMED_IAM
                 rm /tmp/workspace/flypool-miner-app.yaml
+                rm /tmp/workspace/aws_config
                 aws s3 sync /tmp/workspace s3://flypool-miner-app-446226631021-us-east-1/
 
 workflows:
