@@ -1,0 +1,119 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  Environment:
+    Type: String
+    Default: prod
+  CertificateArn:
+    Type: String
+    Description: SSL/TLS Certificate Arn for the Custom Domain Name
+    MinLength: "0"
+    Default: arn:aws:acm:us-east-1:446226631021:certificate/7d51431f-1d5c-4922-8972-3cdecb308550
+  DomainName:
+    Type: String
+    Description: The Fully Qualified Domain Name of the Website
+    MinLength: "0"
+    Default: flypool.failsave.io
+  HostedZoneId:
+    Type: String
+    Description: The Hosted Zone Id of the Zone hosting the domain
+    Default: ZRE7DHAD3SMKA
+
+Resources:
+
+  FlypoolWebsiteBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: Private
+        BucketName: !Sub "gluefactory-site-${Environment}-${AWS::AccountId}-${AWS::Region}"
+        WebsiteConfiguration:
+          ErrorDocument: index.html
+          IndexDocument: index.html
+
+
+  WebsiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref FlypoolWebsiteBucket
+      PolicyDocument:
+        Statement:
+          - Action:
+              - "s3:GetObject"
+            Effect: "Allow"
+            Principal:
+              CanonicalUser: !GetAtt CloudFrontOriginAccessIdentity.S3CanonicalUserId
+            Resource: !Sub 'arn:aws:s3:::${FlypoolWebsiteBucket}/*'
+            
+          - Action:
+              - "s3:ListBucket"
+            Effect: "Allow"
+            Principal:
+              CanonicalUser: !GetAtt CloudFrontOriginAccessIdentity.S3CanonicalUserId
+            Resource: !Sub 'arn:aws:s3:::${FlypoolWebsiteBucket}'
+
+  CloudFrontOriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: 'Users cannot look at S3 Itself!'
+
+  Route53AliasRecord:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneId: !Ref Route53HostedZoneID
+      RecordSets:
+      - Name: !Ref DomainName
+        Type: A
+        AliasTarget:
+          HostedZoneId: !Ref HostedZoneId
+          DNSName: !GetAtt CloudFrontDistribution.DomainName
+
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+          Aliases:
+            - !Ref DomainName
+          Comment: !Sub Flypool Application for ${Environment} Environment
+          CustomErrorResponses:
+            - ErrorCode: 404
+              ResponsePagePath: /index.html
+              ResponseCode: 200
+          DefaultCacheBehavior:
+            Compress: true
+            DefaultTTL: 60
+            MaxTTL: 300
+            AllowedMethods:
+              - GET
+              - HEAD
+            CachedMethods:
+              - GET
+              - HEAD
+            TargetOriginId: !Ref FlypoolWebsiteBucket
+            ForwardedValues:
+              QueryString: 'false'
+              Cookies:
+                Forward: none
+            # TrustedSigners:
+            # - !Ref AWS::AccountId
+            ViewerProtocolPolicy: redirect-to-https
+          DefaultRootObject: index.html
+          Enabled: true
+          HttpVersion: http2
+          IPV6Enabled: false
+          Origins:
+          - DomainName: !GetAtt FlypoolWebsiteBucket.DomainName
+            Id: !Ref FlypoolWebsiteBucket
+            S3OriginConfig:
+                OriginAccessIdentity: !Join ['', ["origin-access-identity/cloudfront/", !Ref CloudFrontOriginAccessIdentity]]
+          PriceClass: PriceClass_100
+          Restrictions:
+            GeoRestriction:
+              RestrictionType: whitelist
+              Locations:
+              - US
+          ViewerCertificate:
+            AcmCertificateArn: !Ref CertificateArn
+            MinimumProtocolVersion: TLSv1.1_2016
+            SslSupportMethod: sni-only

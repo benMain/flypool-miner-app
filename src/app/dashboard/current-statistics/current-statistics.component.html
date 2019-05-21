@@ -1,0 +1,68 @@
+<div *ngIf="loading">
+  <img src="../../../assets/audio.svg" />
+</div>
+
+<div [hidden]="loading">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Statistic</th>
+        <th scope="col">Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">Time</th>
+        <td>{{statistic?.time}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Last Seen</th>
+        <td>{{statistic?.lastSeen}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Coins Per Minute</th>
+        <td>{{statistic?.coinsPerMin}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Dollars$ Per Minute</th>
+        <td>{{statistic?.usdPerMin}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Bitcoin Per Minute</th>
+        <td>{{statistic?.btcPerMin}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Current Hash Rate</th>
+        <td>{{statistic?.currentHashrate}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Average Hash Rate</th>
+        <td>{{statistic?.averageHashrate}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Unpaid Units</th>
+        <td>{{statistic?.unpaid}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Unconfirmed Units</th>
+        <td>{{statistic?.unconfirmed}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Active Workers</th>
+        <td>{{statistic?.activeWorkers}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Valid Shares</th>
+        <td>{{statistic?.validShares}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Invalid Shares</th>
+        <td>{{statistic?.invalidShares}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Stale Shares</th>
+        <td>{{statistic?.staleShares}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
