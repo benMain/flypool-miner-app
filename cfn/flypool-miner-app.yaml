@@ -61,12 +61,12 @@ Resources:
   Route53AliasRecord:
     Type: AWS::Route53::RecordSetGroup
     Properties:
-      HostedZoneId: !Ref Route53HostedZoneID
+      HostedZoneId: !Ref HostedZoneId
       RecordSets:
       - Name: !Ref DomainName
         Type: A
         AliasTarget:
-          HostedZoneId: !Ref HostedZoneId
+          HostedZoneId: Z2FDTNDATAQYW2
           DNSName: !GetAtt CloudFrontDistribution.DomainName
 
   CloudFrontDistribution:
