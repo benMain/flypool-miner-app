@@ -3,6 +3,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthenticationGuard } from './guards';
 import { LayoutComponent } from './dashboard/layout/layout.component';
 import { LoginComponent } from './login/login.component';
+import { AboutComponent } from './about/about.component';
+import { HelpComponent } from './help/help.component';
 
 const routes: Routes = [
   {
@@ -19,6 +21,14 @@ const routes: Routes = [
     component: LayoutComponent,
     canActivate: [AuthenticationGuard],
   },
+  {
+    path: '/about',
+    component: AboutComponent,
+  },
+  {
+    path: '/help',
+    component: HelpComponent,
+  }
 ];
 
 @NgModule({

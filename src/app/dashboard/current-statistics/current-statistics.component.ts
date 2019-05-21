@@ -23,4 +23,11 @@ export class CurrentStatisticsComponent implements OnInit {
     this.loaded = true;
   }
 
+  public getDateString(propName: string): string {
+    if (!this.statistics) {
+      return 'unknown';
+    }
+    return new Date(this.statistics[propName] * 1000).toLocaleString();
+  }
+
 }

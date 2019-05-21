@@ -60,7 +60,7 @@ export class HistoryTrackerComponent implements OnInit {
   private computeChartLabels(history: History[]): Label[] {
     return history
       .map(x => new Date(x.time * 1000))
-      .map(x => x.toLocaleString());
+      .map(x => x.toLocaleTimeString());
   }
 
 }
