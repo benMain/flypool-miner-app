@@ -76,7 +76,6 @@ jobs:
                 --stack-name flypool-miner-app \
                 --capabilities CAPABILITY_NAMED_IAM
                 rm /tmp/workspace/flypool-miner-app/flypool-miner-app.yaml
-                rm /tmp/workspace/flypool-miner-app/aws_config
                 aws s3 sync /tmp/workspace/flypool-miner-app s3://flypool-miner-app-446226631021-us-east-1/
 
 workflows:
