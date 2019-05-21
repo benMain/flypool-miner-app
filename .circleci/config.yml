@@ -32,7 +32,7 @@ jobs:
       - run:
           name: Copy Cloudformation
           command: |
-            cp cfn/* dist/flypool/
+            cp cfn/flypool-miner-app.yaml dist/flypool/flypool-miner-app.yaml
         
       # - run:
       #     name: Unit Test
