@@ -22,11 +22,11 @@ const routes: Routes = [
     canActivate: [AuthenticationGuard],
   },
   {
-    path: '/about',
+    path: 'about',
     component: AboutComponent,
   },
   {
-    path: '/help',
+    path: 'help',
     component: HelpComponent,
   }
 ];
