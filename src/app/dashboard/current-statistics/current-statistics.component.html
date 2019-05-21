@@ -1,8 +1,8 @@
-<div *ngIf="loading">
+<div *ngIf="!loaded">
   <img src="../../../assets/audio.svg" />
 </div>
 
-<div [hidden]="loading">
+<div [hidden]="!loaded">
   <table class="table table-hover">
     <thead>
       <tr>
@@ -13,55 +13,55 @@
     <tbody>
       <tr>
         <th scope="row">Time</th>
-        <td>{{statistic?.time}}</td>
+        <td>{{statistics?.time}}</td>
       </tr>
       <tr>
         <th scope="row">Last Seen</th>
-        <td>{{statistic?.lastSeen}}</td>
+        <td>{{statistics?.lastSeen}}</td>
       </tr>
       <tr>
         <th scope="row">Coins Per Minute</th>
-        <td>{{statistic?.coinsPerMin}}</td>
+        <td>{{statistics?.coinsPerMin}}</td>
       </tr>
       <tr>
         <th scope="row">Dollars$ Per Minute</th>
-        <td>{{statistic?.usdPerMin}}</td>
+        <td>{{statistics?.usdPerMin}}</td>
       </tr>
       <tr>
         <th scope="row">Bitcoin Per Minute</th>
-        <td>{{statistic?.btcPerMin}}</td>
+        <td>{{statistics?.btcPerMin}}</td>
       </tr>
       <tr>
         <th scope="row">Current Hash Rate</th>
-        <td>{{statistic?.currentHashrate}}</td>
+        <td>{{statistics?.currentHashrate}}</td>
       </tr>
       <tr>
         <th scope="row">Average Hash Rate</th>
-        <td>{{statistic?.averageHashrate}}</td>
+        <td>{{statistics?.averageHashrate}}</td>
       </tr>
       <tr>
         <th scope="row">Unpaid Units</th>
-        <td>{{statistic?.unpaid}}</td>
+        <td>{{statistics?.unpaid}}</td>
       </tr>
       <tr>
         <th scope="row">Unconfirmed Units</th>
-        <td>{{statistic?.unconfirmed}}</td>
+        <td>{{statistics?.unconfirmed}}</td>
       </tr>
       <tr>
         <th scope="row">Active Workers</th>
-        <td>{{statistic?.activeWorkers}}</td>
+        <td>{{statistics?.activeWorkers}}</td>
       </tr>
       <tr>
         <th scope="row">Valid Shares</th>
-        <td>{{statistic?.validShares}}</td>
+        <td>{{statistics?.validShares}}</td>
       </tr>
       <tr>
         <th scope="row">Invalid Shares</th>
-        <td>{{statistic?.invalidShares}}</td>
+        <td>{{statistics?.invalidShares}}</td>
       </tr>
       <tr>
         <th scope="row">Stale Shares</th>
-        <td>{{statistic?.staleShares}}</td>
+        <td>{{statistics?.staleShares}}</td>
       </tr>
     </tbody>
   </table>
