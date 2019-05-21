@@ -29,24 +29,38 @@ jobs:
           name: Build
           command: |
             npm run build:prod
+      - run:
+          name: Copy Cloudformation
+          command: |
+            cp cfn/* dist/flypool/
         
       # - run:
       #     name: Unit Test
       #     command: |
-      #       . venv/bin/activate
+      #       . venv/bnpm run build:prodin/activate
       #       nosetests . --with-coverage --cover-xml --cover-erase --cover-package=bots,handlers,templates,clients --cover-xml-file=coverage.xml
       #       .circleci/coverage-update.sh
       # - store_artifacts:
       #     path: coverage.xml
       #     destination: test-reports
+      - persist_to_workspace:
+          root: dist
+          paths:
+            - flypool
+
+  deploy:
+    docker:
+      - image: circleci/python:2.7-jessie
+    working_directory: ~/tmp
+    steps:
       - run:
           name: Install awscli
           command: sudo pip install awscli
-
-      - deploy:
-          name: Deploy
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Deploy to S3
           command: |
-              if [ "${CIRCLE_BRANCH}" == "master" ]; then
                 mkdir ~/.aws
                 mv .circleci/aws_config ~/.aws/config
                 echo "[default]" > ~/.aws/credentials
@@ -54,10 +68,20 @@ jobs:
                 echo "aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}" >> ~/.aws/credentials
                 aws cloudformation deploy --no-fail-on-empty-changeset \
                 --region us-east-1 \
-                --template-file cfn/flypool-miner-app.yaml \
+                --template-file /tmp/workspace/flypool-miner-app.yaml \
                 --stack-name flypool-miner-app \
                 --capabilities CAPABILITY_NAMED_IAM
-                aws s3 cp dist/flypool-miner-app/* s3://flypool-miner-app-446226631021-us-east-1/
-              else
-                echo "Not Master, will not Deploy..."
-              fi 
+                rm /tmp/workspace/flypool-miner-app.yaml
+                aws s3 sync /tmp/workspace s3://flypool-miner-app-446226631021-us-east-1/
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
