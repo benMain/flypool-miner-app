@@ -60,6 +60,12 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run:
+          name: Check Workspace
+          command: ls -ll /tmp/workspace
+      - run:
+          name: Check Workspace Aagain
+          command: ls -ll /tmp/workspace/flypool-miner-app
+      - run:
           name: Deploy to S3
           command: |
                 mkdir ~/.aws
