@@ -26,7 +26,7 @@ Resources:
       Type: AWS::S3::Bucket
       Properties:
         AccessControl: Private
-        BucketName: !Sub "gluefactory-site-${Environment}-${AWS::AccountId}-${AWS::Region}"
+        BucketName: !Sub "flypool-miner-app-${AWS::AccountId}-${AWS::Region}"
         WebsiteConfiguration:
           ErrorDocument: index.html
           IndexDocument: index.html

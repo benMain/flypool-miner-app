@@ -1,0 +1,59 @@
+
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:lts-stretch
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package-lock.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run:
+          name: Install Dependencies
+          command: |
+            npm install
+      - save_cache:
+          paths:
+            - ./node_modules
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
+      - run:
+          name: Build
+          command: |
+            npm run build:prod
+        
+      # - run:
+      #     name: Unit Test
+      #     command: |
+      #       . venv/bin/activate
+      #       nosetests . --with-coverage --cover-xml --cover-erase --cover-package=bots,handlers,templates,clients --cover-xml-file=coverage.xml
+      #       .circleci/coverage-update.sh
+      # - store_artifacts:
+      #     path: coverage.xml
+      #     destination: test-reports
+
+      - deploy:
+          name: Deploy
+          command: |
+              if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                mkdir ~/.aws
+                mv .circleci/aws_config ~/.aws/config
+                echo "[default]" > ~/.aws/credentials
+                echo "aws_access_key_id = ${AWS_ACCESS_KEY_ID}" >> ~/.aws/credentials
+                echo "aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}" >> ~/.aws/credentials
+                aws cloudformation deploy --no-fail-on-empty-changeset \
+                --template-file cfn/flypool-miner-app.yaml \
+                --stack-name flypool-miner-app \
+                --capabilities CAPABILITY_NAMED_IAM
+                aws s3 cp dist/flypool-miner-app/* s3://flypool-miner-app-446226631021-us-east-1/
+              else
+                echo "Not Master, will not Deploy..."
+              fi 
