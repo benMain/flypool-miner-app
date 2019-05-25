@@ -11,7 +11,7 @@ import { promise } from 'protractor';
 })
 export class FlypoolClientService {
 
-  private baseUrl = 'https://api-zcash.flypool.org';
+  private baseUrl = 'https://api.ethermine.org';
   private user: User;
   private currentStatistics: BehaviorSubject<CurrentStatistics>;
   private history: BehaviorSubject<History[]>;
